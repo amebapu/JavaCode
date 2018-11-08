@@ -1,0 +1,45 @@
+112. Path Sum
+Given a binary tree and a sum, determine if the tree has a root-to-leaf path such that adding up all the values along the path equals the given sum.
+
+Note: A leaf is a node with no children.
+
+Example:
+
+Given the below binary tree and sum = 22,
+
+      5
+     / \
+    4   8
+   /   / \
+  11  13  4
+ /  \      \
+7    2      1
+return true, as there exist a root-to-leaf path 5->4->11->2 which sum is 22.
+
+
+//the main idea here is to use DFS recursion. 首先，这个tree是从上往下走的，我们在root位置时候，并不care左子树和右子树的值，因为和当前值无关，
+所以这里我们应该用到pre-order，先看root值，再计算左右；
+思路理清后，basecase是什么？ 这里因为需要走到leaf node， 那么base case还是老样子，root == null; 
+然后，我们就需要先考虑当前node的值，当前值什么情况下是true的？ 就是左子树和右子树都是null，并且sum - root.value刚刚是0，那么直接return；
+如果不是，那么就接着看左边和右边，只要左边和右边有一个满足，那么就是true；注意左右子树的sum必须减去上一个root的value；
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public boolean hasPathSum(TreeNode root, int sum) {
+        if (root == null) {
+            return false;
+        }
+        if (root.left == null && root.right == null && sum - root.val == 0) {
+            return true;
+        }
+        return (hasPathSum(root.left, sum - root.val) || hasPathSum(root.right, sum - root.val));
+    }
+}
