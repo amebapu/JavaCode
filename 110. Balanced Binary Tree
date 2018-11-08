@@ -1,0 +1,70 @@
+Given a binary tree, determine if it is height-balanced.
+
+For this problem, a height-balanced binary tree is defined as:
+
+a binary tree in which the depth of the two subtrees of every node never differ by more than 1.
+
+Example 1:
+
+Given the following tree [3,9,20,null,null,15,7]:
+
+    3
+   / \
+  9  20
+    /  \
+   15   7
+Return true.
+
+Example 2:
+
+Given the following tree [1,2,2,3,3,null,null,4,4]:
+
+       1
+      / \
+     2   2
+    / \
+   3   3
+  / \
+ 4   4
+Return false.
+
+/* 这道题我们用post-order做，因为，我们需要知道左子树和右子树的高度差是不是大于1，那么首先，我们就得知道他们分别的高度是多少，这里有个小窍门，就是我们
+用-1 来表示差值大于1，这样就可以节省很多时间； code里面，先用recursion走左边，再走右边，最后回到root的时候，需要判断，左右差值，如果不满足balanced的
+条件，就返回-1，完美用一个int就又代表了高度，又代表了isBalanced，因为我们这只要有了一个地方不balanced，整个tree就不balanced了，所以返回-1就好，最后
+return的时候，把1加上左右最大的那个height值，就可以继续轮回了；注意为什么我要在int left 下面做left大小的判断？这是为了时间复杂度，如果我们能在左边
+就确定不是balanced，那么右边就不用做了，这样可以省下不少时间；
+时间：平均 O(N) 每个node都会走一遍，并且每个node其实只是判定一下，所以最后是O(N)的复杂度；
+这是平均的复杂度，那么最好的情况呢？
+可能我们只跑了一个tree的一条边，就是height个node，所以最好情况的复杂度就是logn；（前提是我们有left后直接return的code）
+空间： 平均 O(N), 一条线； 最好 log(N) 就是balanced的；
+
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public boolean isBalanced(TreeNode root) {
+
+        return helper(root) >= 0;
+    }
+    private int helper(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = helper(root.left);
+        if (left < 0) {
+            return -1;
+        }
+        int right = helper(root.right);
+        if (left < 0 || right < 0 || Math.abs(left - right) > 1) {
+            return -1;
+        }
+        return Math.max(left, right) + 1;
+    }
+}
