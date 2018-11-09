@@ -1,0 +1,46 @@
+Reverse a linked list from position m to n. Do it in one-pass.
+
+Note: 1 ≤ m ≤ n ≤ length of list.
+
+Example:
+
+Input: 1->2->3->4->5->NULL, m = 2, n = 4
+Output: 1->4->3->2->5->NULL
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+ /* 这道题还是用iteration做最好，空间不变，时间是N；
+class Solution {
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        //corner case, return head itself;
+        if (head == null || head.next == null) {
+            return head;
+        }
+        //保持对头部的控制，因为第一个node可能会被挪位置，如果m=1,我们需要dummy来放pre接收后面的指针.
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode pre = dummy;
+        //开始先移动pre指针到m的右边，作为一个接收指针存在
+        for (int i = 0; i < m - 1; i++) {
+            pre = pre.next;
+        }
+        //pre就位后，分配位置给current指针和运输then指针，then的作用就是不断把cur后面的数移到pre的后面；
+        ListNode cur = pre.next;
+        ListNode then = cur.next;
+        //m和n之间有多少空格，我们的移动计划就走多少次；
+        for (int i = 0; i < n - m; i++) {
+            cur.next = then.next; //因为要移走then，那么then后面的list需要头部
+            then.next = pre.next; //可以开始移动then到pre了
+            pre.next = then;      //改变pre的链接到then，成为一条新的list
+            then = cur.next;      //把运输指针挪回新的位置，准备开始下一轮
+        }
+        return dummy.next;
+        
+    }
+}
