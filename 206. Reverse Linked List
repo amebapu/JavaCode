@@ -1,0 +1,54 @@
+Reverse a singly linked list.
+
+Example:
+
+Input: 1->2->3->4->5->NULL
+Output: 5->4->3->2->1->NULL
+Follow up:
+
+A linked list can be reversed either iteratively or recursively. Could you implement both?
+
+/* 第一种办法：同样，在LinkedList里面，我们也要考虑是什么order； 比如这里，反转一个LinkedList，我们肯定需要从后往前传，也就是post order； 为什么，假设我们有两种选择，一个是从头开始，一个是从尾开始，头和尾的区别在哪？我们发现，头是一个特殊情况，因为头的前面没有东西连着，而其他任何点，包括尾巴都是有前也有后，所以，为了更好的做recursion，我们要从后往前走，也就是post-order，知道了后面，算前面；
+所以可以看到我们code里面先做的recursion head.next,再计算的第一个点的情况，这样就ok了；
+
+时间：O(N); 每个node都走一次；
+空间：O(N); 每个node都要进入下一层空间；
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode newHead = reverseList(head.next); 
+        head.next.next = head;
+        head.next = null;
+        return newHead;
+        
+    }
+}
+
+/* 第二种办法： iteration, 需要三个指针，一个在前，pre来让指针反向，一个cur代表当前指针，一个记录当前指针本来应该指向的next（保持头部控制）；
+
+时间：O(N);
+空间：O(1); 除了指针，没有额外空间；
+
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        ListNode pre = null;
+        ListNode cur = head;
+        while (cur != null) {
+            ListNode temp = cur.next;
+            cur.next = pre;
+            pre = cur;
+            cur = temp;
+        }
+        return pre;
+    }
+}
