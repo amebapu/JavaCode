@@ -1,0 +1,86 @@
+Given a singly linked list L: L0→L1→…→Ln-1→Ln,
+reorder it to: L0→Ln→L1→Ln-1→L2→Ln-2→…
+
+You may not modify the values in the list's nodes, only nodes itself may be changed.
+
+Example 1:
+
+Given 1->2->3->4, reorder it to 1->4->2->3.
+Example 2:
+
+Given 1->2->3->4->5, reorder it to 1->5->2->4->3.
+
+/**
+ * class ListNode {
+ *   public int value;
+ *   public ListNode next;
+ *   public ListNode(int value) {
+ *     this.value = value;
+ *     next = null;
+ *   }
+ * }
+ */
+/*这个code需要三个helper function，
+第一个，找中点；
+第二个，反转链表；
+第三个，merge；merge是以一边一个，不判断大小的顺序来的；
+然后，主函数里面只需要找到中点，把list分成两半，
+注意下左边的list的tail要next到null，然后反转右边的list；
+最后merge在一起就行了； */
+//时间是O(n);
+//空间应该是O(1)，因为就算是dummyhead，也只是一个head，并没有新的list生成；
+
+
+public class Solution {
+  public ListNode reorder(ListNode head) {
+    // Write your solution here
+    if (head == null || head.next == null) {
+      return head;
+    }
+    //find the mid 
+    ListNode mid = findMid(head);
+    ListNode next = mid.next;
+    mid.next = null;
+    mid = next;
+    return merge(head, reverse(mid));
+    
+  }
+  private ListNode merge(ListNode one, ListNode two) {
+    ListNode dummy = new ListNode(0);
+    ListNode cur = dummy;
+    while (one != null && two != null) {
+      cur.next = one;
+      one = one.next;
+      cur.next.next = two;
+      two = two.next;
+      cur = cur.next.next;
+    }
+    if (one != null) {
+      cur.next = one;
+    } else {
+      cur.next = two;
+    }
+    return dummy.next;
+  }
+  private ListNode reverse(ListNode head) {
+    ListNode prev = null;
+    while (head != null) {
+      ListNode next = head.next;
+      head.next = prev;
+      prev = head;
+      head = next;
+    }
+    return prev;
+  }
+  private ListNode findMid(ListNode head) {
+    if (head == null || head.next == null) {
+      return head;
+    }
+    ListNode slow = head, fast = head;
+    while (fast.next != null && fast.next.next != null) {
+      fast = fast.next.next;
+      slow = slow.next;
+    }
+    return slow;
+  }
+}
