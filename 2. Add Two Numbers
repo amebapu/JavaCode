@@ -1,0 +1,48 @@
+You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order and each of their nodes contain a single digit. Add the two numbers and return it as a linked list.
+
+You may assume the two numbers do not contain any leading zero, except the number 0 itself.
+
+Example:
+
+Input: (2 -> 4 -> 3) + (5 -> 6 -> 4)
+Output: 7 -> 0 -> 8
+Explanation: 342 + 465 = 807.
+
+//这道题其实就是两个list同步走相加的过程，l1和l2，这里需要考虑的corner case是，如果一个走完了，另一个怎么办？这里solution用了一个简单的办法，省掉了
+很多不必要的if else，就是如果一个list加完了，那就写一个判断，如果判断走完了，就一直加0，这样就可以保持两个list同步结束，会简化很多步骤；另外，如果
+carry超出去了一1位，最后需要加上去；
+
+时间复杂度：O(n) 其实就是l1和l2之间最大的值；
+空间： 也是O(n)因为取决于最长的那个list的长度；
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+    ListNode dummy = new ListNode(0);
+    int carry = 0;
+    ListNode i = l1;
+    ListNode j = l2;
+    ListNode cur = dummy;
+    while (i != null || j != null) {
+      int x = (i != null) ? i.val: 0;
+      int y = (j != null) ? j.val: 0;
+      int sum = x + y + carry;
+      carry = sum / 10;
+      cur.next = new ListNode(sum % 10);
+      cur = cur.next;
+      if (i != null) i = i.next;
+      if (j != null) j = j.next;
+    }
+    if (carry > 0) {
+      cur.next = new ListNode(1);
+    }
+    return dummy.next;
+    }
+}
