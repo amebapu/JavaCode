@@ -1,0 +1,65 @@
+Given a singly linked list, determine if it is a palindrome.
+
+Example 1:
+
+Input: 1->2
+Output: false
+Example 2:
+
+Input: 1->2->2->1
+Output: true
+
+Follow up:
+Could you do it in O(n) time and O(1) space?
+
+/**
+ * class ListNode {
+ *   public int value;
+ *   public ListNode next;
+ *   public ListNode(int value) {
+ *     this.value = value;
+ *     next = null;
+ *   }
+ * }
+ */
+public class Solution {
+  public boolean isPalindrome(ListNode head) {
+    //use fast and slow to find the mid
+    ListNode fast = head, slow = head;
+    while (fast != null && fast.next != null) {
+      fast = fast.next.next;
+      slow = slow.next;
+    }
+    /*比较的时候我们想要右边小一些，这样右边走完了，比较就
+    结束了，方便后面写条件，所以我们要保证无论input 
+    LinkedList是奇数还是偶数，右边长度都比左边小于或者等于
+    */
+    if (fast != null) {
+      slow = slow.next;
+    }
+    //把右边反转，并且fast移到左边去当cur使用；
+    slow = reverse(slow);
+    fast = head;
+    while (slow != null) {
+      if (fast.value != slow.value) {
+        return false;
+      }
+      fast = fast.next;
+      slow = slow.next;
+    }
+    //右边都走完了，还没有触发false，那么就是true了
+    //左边可能会走不完，如果是奇数，不过无所谓；
+    return true;
+  }
+  //这里必须用iteration的写法，不然空间复杂度无法O(1);时间复杂度是O(n);
+  private ListNode reverse(ListNode head) {
+    ListNode prev = null;
+    while (head != null) {
+      ListNode next = head.next;
+      head.next = prev;
+      prev = head;
+      head = next;
+    }
+    return prev;
+  }
+}
